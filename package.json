@@ -2,7 +2,7 @@
   "name": "qsp-bundle",
   "version": "0.1.0",
   "description": "Собирает воедино все QSP исходники в папках и в подпапках согласно указанному главному исходнику.",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "clear": "shx rm -rf ./build/*",
     "build": "tsc",
