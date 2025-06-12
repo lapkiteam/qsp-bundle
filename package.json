@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "clear": "gulp clear",
-    "build": "tsc",
+    "build": "gulp build",
     "dev": "npm run build && cd build && node app.js",
     "deploy": "npm run clear && npm run build && gulp packageJsonCopy"
   },
