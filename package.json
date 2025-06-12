@@ -1,0 +1,21 @@
+{
+  "name": "qsp-bundle",
+  "version": "0.1.0",
+  "description": "Собирает воедино все QSP исходники в папках и в подпапках согласно указанному главному исходнику.",
+  "main": "index.js",
+  "scripts": {
+    "clear": "shx rm -rf ./build/*",
+    "build": "tsc",
+    "dev": "npm run build && cd build && node app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.62.0",
+    "@typescript-eslint/parser": "^5.62.0",
+    "eslint": "^8.57.1",
+    "shx": "^0.4.0",
+    "typescript": "~4.7.3"
+  }
+}
