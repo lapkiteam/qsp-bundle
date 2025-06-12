@@ -3,25 +3,36 @@
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended"
   ],
-  "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-    "project": ["./tsconfig.json"]
-  },
-  "plugins": [
-    "@typescript-eslint"
-  ],
   "rules": {
-    "@typescript-eslint/prefer-namespace-keyword": "off",
-    "@typescript-eslint/no-namespace": "off",
-    "@typescript-eslint/switch-exhaustiveness-check": "warn",
     "quotes": ["warn", "double"],
     "semi": ["warn", "never"],
     "camelcase": ["warn", { "properties": "always" }],
-    "no-console": "warn",
-    "require-await": "warn",
-    "@typescript-eslint/no-floating-promises": "warn",
-    // ts overlap:
-    "@typescript-eslint/no-unused-vars": "off"
+    "require-await": "warn"
   },
-  "root": false
+  "env": {
+    "node": true
+  },
+  "overrides": [
+    {
+      "files": ["*.ts"],
+      "parser": "@typescript-eslint/parser",
+      "parserOptions": {
+        "project": ["./tsconfig.json"]
+      },
+      "plugins": [
+        "@typescript-eslint"
+      ],
+      "rules": {
+        "@typescript-eslint/prefer-namespace-keyword": "off",
+        "@typescript-eslint/no-namespace": "off",
+        "@typescript-eslint/switch-exhaustiveness-check": "warn",
+        "@typescript-eslint/no-floating-promises": "warn",
+        // ts overlap:
+        "@typescript-eslint/no-unused-vars": "off"
+      }
+    }
+  ],
+  "ignorePatterns": [
+    "/build"
+  ]
 }
