@@ -1,6 +1,6 @@
 // @ts-check
 import fs from "fs"
-import { task, src, dest } from "gulp"
+import { task, src, dest, series } from "gulp"
 import log from "gulplog"
 import path from "path"
 import ts from "typescript"
@@ -58,3 +58,9 @@ task("packageJsonCopy", cb => {
     .pipe(dest(buildPath))
     .on("end", cb)
 })
+
+task("deploy", series([
+  "clear",
+  "build",
+  "packageJsonCopy",
+]))
