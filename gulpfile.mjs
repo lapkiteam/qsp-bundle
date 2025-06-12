@@ -59,8 +59,15 @@ task("packageJsonCopy", cb => {
     .on("end", cb)
 })
 
+task("readmeCopy", done => {
+  src("./README.md")
+    .pipe(dest(buildPath))
+    .on("end", done)
+})
+
 task("deploy", series([
   "clean",
   "build",
+  "readmeCopy",
   "packageJsonCopy",
 ]))
