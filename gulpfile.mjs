@@ -8,7 +8,7 @@ import jsonModifier from "gulp-json-modifier"
 
 const buildPath = "./build"
 
-task("clear", cb => {
+task("clean", cb => {
   fs.rm(`${buildPath}`, { recursive: true, force: true }, cb)
 })
 
@@ -60,7 +60,7 @@ task("packageJsonCopy", cb => {
 })
 
 task("deploy", series([
-  "clear",
+  "clean",
   "build",
   "packageJsonCopy",
 ]))

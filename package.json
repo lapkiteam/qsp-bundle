@@ -4,7 +4,7 @@
   "description": "Собирает воедино все QSP исходники в папках и в подпапках согласно указанному главному исходнику.",
   "main": "app.js",
   "scripts": {
-    "clear": "gulp clear",
+    "clean": "gulp clean",
     "build": "gulp build",
     "dev": "npm run build && cd build && node app.js",
     "deploy": "gulp deploy"
