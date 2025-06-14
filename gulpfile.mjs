@@ -53,6 +53,10 @@ task("packageJsonCopy", cb => {
     .pipe(jsonModifier(function(json) {
       delete json.scripts
       delete json.devDependencies
+      json.main = "bin/qsp-bundle.js"
+      json.bin = {
+        ["qsp-bundle"]: "bin/qsp-bundle.js"
+      }
       return json
     }))
     .pipe(dest(buildPath))

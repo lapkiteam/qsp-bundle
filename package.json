@@ -2,12 +2,13 @@
   "name": "qsp-bundle",
   "version": "0.1.0",
   "description": "Собирает воедино все QSP исходники в папках и в подпапках согласно указанному главному исходнику.",
-  "main": "app.js",
   "scripts": {
     "clean": "gulp clean",
     "build": "gulp build",
-    "dev": "npm run build && cd build && node app.js",
-    "deploy": "gulp deploy"
+    "dev": "npm run build && cd build && node bin/qsp-bundle.js",
+    "deploy": "gulp deploy",
+    "globalInstall": "cd build && npm install -g .",
+    "globalUninstall": "cd build && npm uninstall qsp-bundle"
   },
   "keywords": [],
   "author": "",
