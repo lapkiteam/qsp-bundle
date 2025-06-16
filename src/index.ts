@@ -1,7 +1,26 @@
-import { parse } from "@typescript-eslint/parser"
+import { Command } from "commander"
+import { writeFileSync } from "fs"
 
-import { hello } from "./lib"
+import { bundle } from "./lib"
 
-hello()
-const x = new Set()
-console.log(parse("hello"))
+const program = new Command()
+
+program
+  .name("qsp-bundle")
+  .description("Собирает воедино все QSP исходники в папках и в подпапках согласно указанному главному исходнику.")
+  .version("0.1.0")
+
+program
+  .argument("<main_source_path>", "string to split")
+  .option("-o, --output <path>", "output path")
+  .action((mainSourcePath, options) => {
+    const result = bundle(mainSourcePath)
+    const outputPath: string | undefined = options.output
+    if (!outputPath) {
+      console.log(result)
+      return
+    }
+    writeFileSync(outputPath, result)
+  })
+
+program.parse()
