@@ -5,6 +5,7 @@ import log from "gulplog"
 import path from "path"
 import ts from "typescript"
 import jsonModifier from "gulp-json-modifier"
+import jest from "jest"
 
 const buildPath = "./build"
 
@@ -12,8 +13,11 @@ task("clean", cb => {
   fs.rm(`${buildPath}`, { recursive: true, force: true }, cb)
 })
 
-task("build", done => {
-  const configPath = "tsconfig.json"
+/**
+ * @param {string} configPath
+ * @param {import("undertaker").TaskCallback} done
+ */
+function tsBuild(configPath, done) {
   const configFile = ts.readConfigFile(configPath, ts.sys.readFile)
   const parsedCommandLine = ts.parseJsonConfigFileContent(
     configFile.config,
@@ -46,6 +50,10 @@ task("build", done => {
 
   log.info("Compilation successful!")
   done()
+}
+
+task("build", done => {
+  tsBuild("tsconfig.build.json", done)
 })
 
 task("packageJsonCopy", cb => {
@@ -75,3 +83,15 @@ task("deploy", series([
   "readmeCopy",
   "packageJsonCopy",
 ]))
+
+task("test", done => {
+  jest.run()
+    .then(() => { done() })
+    .catch(done)
+})
+
+task("testWatch", done => {
+  jest.run(["--watchAll"])
+    .then(() => { done() })
+    .catch(done)
+})
