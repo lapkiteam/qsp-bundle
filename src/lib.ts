@@ -45,5 +45,6 @@ export function bundle(mainPath: string, options?: Options) {
     const path = join(currentDir.parentPath, currentDir.name)
     sources.push(readFileSync(path, Options.getEncoding(options)))
   }
+  directory.closeSync()
   return sources.join(Options.getSeparator(options))
 }

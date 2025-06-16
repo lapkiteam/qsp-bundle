@@ -1,7 +1,21 @@
 import { describe, it, expect } from "@jest/globals"
 
-describe("sum", () => {
-  it("2 + 2 = 4", () => {
-    expect(2 + 2).toStrictEqual(4)
+import { bundle, Options } from "../src/lib"
+
+describe("bundle", () => {
+  it("mockgame", () => {
+    expect(
+      bundle("./tests/mockGame/main.qsps")
+    ).toStrictEqual([
+        "# main\r\n\r\n-\r\n",
+        "# lib\r\n\r\n-\r\n",
+        "# version\r\n\r\n-\r\n",
+        "# hero\r\n\r\n-\r\n",
+        "# potion\r\n\r\n-\r\n",
+        "# shield\r\n\r\n-\r\n",
+        "# sword\r\n\r\n-\r\n",
+        "# city\r\n\r\n-\r\n",
+        "# forest\r\n\r\n-\r\n",
+      ].join(Options.separatorDefault))
   })
 })
