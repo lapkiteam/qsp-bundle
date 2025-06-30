@@ -46,10 +46,12 @@ export enum WriteFileError {
 }
 
 export namespace MemoryFileSystem {
+  // refactor: `MemoryFileSystem.mk` rename to `create`
   export function mk(dir: [string, Entity][]): MemoryFileSystem {
     return new Map(dir)
   }
 
+  // refactor: `MemoryFileSystem.create` move to `Entity` and rename it to `createSubDir`
   export function create(
     pathFragments: Path,
     content: FileContent,
@@ -88,17 +90,6 @@ export namespace MemoryFileSystem {
       return Result.mkError(WriteFileError.PathFragmentsIsEmpty)
     }
 
-    function createSubTree(fragments: string[]): Entity {
-      if (fragments.length === 1) {
-        const [first] = fragments
-        const child = Entity.createFile(content)
-        return Entity.createDirectory([[first, child]])
-      }
-      const [first, ...rest] = fragments
-      const child = createSubTree(rest)
-      return Entity.createDirectory([[first, child]])
-    }
-
     function loop(
       fragments: string[],
       index: number,
@@ -119,8 +110,9 @@ export namespace MemoryFileSystem {
 
       const existing = dir.get(current)
       if (!existing || existing.case === "File") {
-        const restFragments = fragments.slice(index + 1)
-        const newEntity = createSubTree(restFragments)
+        const newEntity = Entity.createDirectory2(
+          create(fragments, content, index + 1)
+        )
         const newDir = new Map(dir)
         newDir.set(current, newEntity)
         return Result.mkOk(newDir)
