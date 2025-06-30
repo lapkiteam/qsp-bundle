@@ -36,6 +36,31 @@ export namespace Entity {
   export function createFile(content: FileContent): Entity {
     return UnionCase.mkUnionCase("File", content)
   }
+
+  // refactor: `Entity.create` rename it to `createSubDir`
+  export function create(
+    pathFragments: Path,
+    content: FileContent,
+    pathFragmentStartIndex?: number
+  ): Entity {
+    const pathFragmentsLength = pathFragments.length
+    if (pathFragmentsLength <= 0) {
+      throw new Error("`pathFragments` is empty!")
+    }
+    pathFragmentStartIndex = pathFragmentStartIndex || 0
+    let entity = Entity.createDirectory([[
+      pathFragments[pathFragmentsLength - 1],
+      Entity.createFile(content),
+    ]])
+    for (let pathFragmentsIndex = pathFragmentsLength - 2;
+      pathFragmentsIndex >= pathFragmentStartIndex;
+      pathFragmentsIndex--
+    ) {
+      const pathFragment = pathFragments[pathFragmentsIndex]
+      entity = Entity.createDirectory([[pathFragment, entity]])
+    }
+    return entity
+  }
 }
 
 export type MemoryFileSystem = Map<string, Entity>
@@ -49,36 +74,6 @@ export namespace MemoryFileSystem {
   // refactor: `MemoryFileSystem.mk` rename to `create`
   export function mk(dir: [string, Entity][]): MemoryFileSystem {
     return new Map(dir)
-  }
-
-  // refactor: `MemoryFileSystem.create` move to `Entity` and rename it to `createSubDir`
-  export function create(
-    pathFragments: Path,
-    content: FileContent,
-    pathFragmentStartIndex?: number
-  ): MemoryFileSystem {
-    const pathFragmentsLength = pathFragments.length
-    if (pathFragmentsLength <= 0) {
-      throw new Error("`pathFragments` is empty!")
-    }
-    pathFragmentStartIndex = pathFragmentStartIndex || 0
-    let fileSystem = Entity.createDirectory([[
-      pathFragments[pathFragmentsLength - 1],
-      Entity.createFile(content),
-    ]])
-    for (let pathFragmentsIndex = pathFragmentsLength - 2;
-      pathFragmentsIndex >= pathFragmentStartIndex;
-      pathFragmentsIndex--
-    ) {
-      const pathFragment = pathFragments[pathFragmentsIndex]
-      fileSystem = Entity.createDirectory([[pathFragment, fileSystem]])
-    }
-    switch (fileSystem.case) {
-      case "Directory":
-        return fileSystem.fields
-      case "File":
-        throw new Error("")
-    }
   }
 
   export function writeFile(
@@ -110,9 +105,7 @@ export namespace MemoryFileSystem {
 
       const existing = dir.get(current)
       if (!existing || existing.case === "File") {
-        const newEntity = Entity.createDirectory2(
-          create(fragments, content, index + 1)
-        )
+        const newEntity = Entity.create(fragments, content, index + 1)
         const newDir = new Map(dir)
         newDir.set(current, newEntity)
         return Result.mkOk(newDir)

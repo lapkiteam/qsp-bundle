@@ -3,37 +3,43 @@ import { Result } from "@fering-org/functional-helper"
 
 import { MemoryFileSystem, Entity, WriteFileError } from "../../src/lib/fileSystem"
 
-describe("create", () => {
+describe("Entity.create", () => {
   it("just file with content", () => {
-    expect(MemoryFileSystem.create(["adalinda.md"], "Hello, I'm Adalinda!"))
-      .toStrictEqual(MemoryFileSystem.mk([
-        ["adalinda.md", Entity.createFile("Hello, I'm Adalinda!")]
-      ]))
+    expect(Entity.create(["adalinda.md"], "Hello, I'm Adalinda!"))
+      .toStrictEqual(
+        Entity.createDirectory([
+          ["adalinda.md", Entity.createFile("Hello, I'm Adalinda!")]
+        ])
+      )
   })
 
   it("full path with content", () => {
-    expect(MemoryFileSystem.create(
+    expect(Entity.create(
       ["discord", "users", "adalinda.md"],
       "Hello, I'm Adalinda!",
-    )).toStrictEqual(MemoryFileSystem.mk([
-        ["discord", Entity.createDirectory([[
-          "users", Entity.createDirectory([[
-            "adalinda.md", Entity.createFile("Hello, I'm Adalinda!")
-          ]])
-        ]])]
-      ]))
+    )).toStrictEqual(
+        Entity.createDirectory([
+          ["discord", Entity.createDirectory([
+            ["users", Entity.createDirectory([
+              ["adalinda.md", Entity.createFile("Hello, I'm Adalinda!")]
+            ])]
+          ])]
+        ])
+      )
   })
 
   it("full path with content and path start index", () => {
-    expect(MemoryFileSystem.create(
+    expect(Entity.create(
       ["discord", "users", "adalinda.md"],
       "Hello, I'm Adalinda!",
       1,
-    )).toStrictEqual(MemoryFileSystem.mk([
-      ["users", Entity.createDirectory([
-        ["adalinda.md", Entity.createFile("Hello, I'm Adalinda!")]
-      ])]
-    ]))
+    )).toStrictEqual(
+        Entity.createDirectory([
+          ["users", Entity.createDirectory([
+            ["adalinda.md", Entity.createFile("Hello, I'm Adalinda!")]
+          ])]
+        ])
+      )
   })
 })
 
