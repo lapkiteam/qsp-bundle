@@ -38,10 +38,6 @@ export namespace Entity {
   }
 }
 
-export type FileSystem =
-  | UnionCase<"Directory", Map<PathFragment, FileSystem>>
-  | UnionCase<"File", FileContent>
-
 export type MemoryFileSystem = Map<string, Entity>
 
 export enum WriteFileError {
@@ -49,43 +45,38 @@ export enum WriteFileError {
   "PathFragmentsIsEmpty",
 }
 
-export namespace FileSystem {
+export namespace MemoryFileSystem {
   export function mk(dir: [string, Entity][]): MemoryFileSystem {
     return new Map(dir)
-  }
-
-  export function createDirectory(
-    dir: [PathFragment, FileSystem][]
-  ): FileSystem {
-    return UnionCase.mkUnionCase("Directory", new Map(dir))
-  }
-
-  export function createFile(content: FileContent): FileSystem {
-    return UnionCase.mkUnionCase("File", content)
   }
 
   export function create(
     pathFragments: Path,
     content: FileContent,
     pathFragmentStartIndex?: number
-  ): FileSystem {
+  ): MemoryFileSystem {
     const pathFragmentsLength = pathFragments.length
     if (pathFragmentsLength <= 0) {
       throw new Error("`pathFragments` is empty!")
     }
     pathFragmentStartIndex = pathFragmentStartIndex || 0
-    let fileSystem: FileSystem = createDirectory([[
+    let fileSystem = Entity.createDirectory([[
       pathFragments[pathFragmentsLength - 1],
-      createFile(content),
+      Entity.createFile(content),
     ]])
     for (let pathFragmentsIndex = pathFragmentsLength - 2;
       pathFragmentsIndex >= pathFragmentStartIndex;
       pathFragmentsIndex--
     ) {
       const pathFragment = pathFragments[pathFragmentsIndex]
-      fileSystem = createDirectory([[pathFragment, fileSystem]])
+      fileSystem = Entity.createDirectory([[pathFragment, fileSystem]])
     }
-    return fileSystem
+    switch (fileSystem.case) {
+      case "Directory":
+        return fileSystem.fields
+      case "File":
+        throw new Error("")
+    }
   }
 
   export function writeFile(

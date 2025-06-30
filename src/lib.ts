@@ -1,7 +1,7 @@
 import { dirname, basename, extname, join } from "path"
 import { opendirSync, type Dirent, readFileSync } from "fs"
 
-import { FileSystem } from "./lib/fileSystem"
+import { MemoryFileSystem } from "./lib/fileSystem"
 
 export type Options = {
   /** `utf8` by default */
