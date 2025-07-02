@@ -94,9 +94,9 @@ export namespace MemoryFileSystem {
   }
 
   export function writeFile(
+    fileSystem: MemoryFileSystem,
     pathFragments: string[],
     content: string,
-    fileSystem: MemoryFileSystem,
   ): Result<MemoryFileSystem, WriteFileError> {
     if (pathFragments.length === 0) {
       return Result.mkError(WriteFileError.PathFragmentsIsEmpty)

@@ -46,10 +46,10 @@ describe("Entity.create", () => {
 describe("writeFile", () => {
   it("is directory error", () => {
     expect(MemoryFileSystem.writeFile(
-      ["adalinda.md"], "Hello, I'm Adalinda!",
       MemoryFileSystem.create([
         ["adalinda.md", Entity.createDirectory()]
       ]),
+      ["adalinda.md"], "Hello, I'm Adalinda!",
     ))
       .toStrictEqual(
         Result.mkError(WriteFileError.IsDirectory)
@@ -57,8 +57,8 @@ describe("writeFile", () => {
   })
   it("empty path error", () => {
     expect(MemoryFileSystem.writeFile(
-      [], "",
       MemoryFileSystem.create(),
+      [], "",
     ))
       .toStrictEqual(
         Result.mkError(WriteFileError.PathFragmentsIsEmpty)
@@ -66,8 +66,8 @@ describe("writeFile", () => {
   })
   it("create and write file in empty directory", () => {
     expect(MemoryFileSystem.writeFile(
-      ["adalinda.md"], "Hello, I'm Adalinda!",
       MemoryFileSystem.create(),
+      ["adalinda.md"], "Hello, I'm Adalinda!",
     ))
       .toStrictEqual(
         Result.mkOk(MemoryFileSystem.create([
@@ -77,10 +77,10 @@ describe("writeFile", () => {
   })
   it("create and write file in not empty directory", () => {
     expect(MemoryFileSystem.writeFile(
-      ["adalinda.md"], "Hello, I'm Adalinda!",
       MemoryFileSystem.create([
         ["index.md", Entity.createFile("empty")]
       ]),
+      ["adalinda.md"], "Hello, I'm Adalinda!",
     ))
       .toStrictEqual(
         Result.mkOk(MemoryFileSystem.create([
@@ -91,10 +91,10 @@ describe("writeFile", () => {
   })
   it("rewrite one directory file", () => {
     expect(MemoryFileSystem.writeFile(
-      ["adalinda.md"], "Hello, I'm Adalinda!",
       MemoryFileSystem.create([
         ["adalinda.md", Entity.createFile("empty")]
       ]),
+      ["adalinda.md"], "Hello, I'm Adalinda!",
     ))
       .toStrictEqual(
         Result.mkOk(MemoryFileSystem.create([
@@ -104,12 +104,12 @@ describe("writeFile", () => {
   })
   it("rewrite one subdirectory file", () => {
     expect(MemoryFileSystem.writeFile(
-      ["users", "adalinda.md"], "Hello, I'm Adalinda!",
       MemoryFileSystem.create([
         ["users", Entity.createDirectory([
           ["adalinda.md", Entity.createFile("empty")],
         ])],
       ]),
+      ["users", "adalinda.md"], "Hello, I'm Adalinda!",
     ))
       .toStrictEqual(
         Result.mkOk(MemoryFileSystem.create([
@@ -121,12 +121,12 @@ describe("writeFile", () => {
   })
   it("create discord/users/adalinda.md in discord/index.md", () => {
     expect(MemoryFileSystem.writeFile(
-      ["discord", "users", "adalinda.md"], "Hello, I'm Adalinda!",
       MemoryFileSystem.create([
         ["discord", Entity.createDirectory([
           ["index.md", Entity.createFile("empty")],
         ])],
       ]),
+      ["discord", "users", "adalinda.md"], "Hello, I'm Adalinda!",
     ))
       .toStrictEqual(
         Result.mkOk(MemoryFileSystem.create([
@@ -141,10 +141,10 @@ describe("writeFile", () => {
   })
   it("create discord/users/lumi.md in discord", () => {
     expect(MemoryFileSystem.writeFile(
-      ["discord", "users", "adalinda.md"], "Hello, I'm Adalinda!",
       MemoryFileSystem.create([
         ["discord", Entity.createDirectory()],
       ]),
+      ["discord", "users", "adalinda.md"], "Hello, I'm Adalinda!",
     ))
       .toStrictEqual(
         Result.mkOk(MemoryFileSystem.create([
