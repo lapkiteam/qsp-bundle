@@ -77,7 +77,7 @@ export enum ReadFileError {
 }
 
 export namespace MemoryFileSystem {
-  export function create(dir: [string, Entity][]): MemoryFileSystem {
+  export function create(dir?: [string, Entity][]): MemoryFileSystem {
     return new Map(dir)
   }
 

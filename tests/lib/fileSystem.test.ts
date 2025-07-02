@@ -58,7 +58,7 @@ describe("writeFile", () => {
   it("empty path error", () => {
     expect(MemoryFileSystem.writeFile(
       [], "",
-      MemoryFileSystem.create([]),
+      MemoryFileSystem.create(),
     ))
       .toStrictEqual(
         Result.mkError(WriteFileError.PathFragmentsIsEmpty)
@@ -67,7 +67,7 @@ describe("writeFile", () => {
   it("create and write file in empty directory", () => {
     expect(MemoryFileSystem.writeFile(
       ["adalinda.md"], "Hello, I'm Adalinda!",
-      MemoryFileSystem.create([]),
+      MemoryFileSystem.create(),
     ))
       .toStrictEqual(
         Result.mkOk(MemoryFileSystem.create([
@@ -186,7 +186,7 @@ describe("readFile", () => {
   it("empty path error", () => {
     expect(MemoryFileSystem.readFile(
       [],
-      MemoryFileSystem.create([]),
+      MemoryFileSystem.create(),
     ))
       .toStrictEqual(
         Result.mkError(ReadFileError.PathFragmentsIsEmpty)
