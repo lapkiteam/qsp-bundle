@@ -175,8 +175,8 @@ export namespace MemoryFileSystem {
   }
 
   export function remove(
-    pathFragments: Path,
     fileSystem: MemoryFileSystem,
+    pathFragments: Path,
   ): Result<MemoryFileSystem, RemoveError> {
     const pathFragmentsLength = pathFragments.length
     function loop(

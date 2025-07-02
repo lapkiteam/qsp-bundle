@@ -221,7 +221,6 @@ describe("readFile", () => {
 describe("remove", () => {
   it("remove file", () => {
     expect(MemoryFileSystem.remove(
-      ["discord", "users", "adalinda.md"],
       MemoryFileSystem.create([
         ["discord", Entity.createDirectory([
           ["guilds", Entity.createDirectory()],
@@ -231,6 +230,7 @@ describe("remove", () => {
           ])],
         ])],
       ]),
+      ["discord", "users", "adalinda.md"],
     ))
       .toStrictEqual(Result.mkOk(
         MemoryFileSystem.create([
@@ -245,7 +245,6 @@ describe("remove", () => {
   })
   it("remove directory", () => {
     expect(MemoryFileSystem.remove(
-      ["discord", "users"],
       MemoryFileSystem.create([
         ["discord", Entity.createDirectory([
           ["guilds", Entity.createDirectory()],
@@ -255,6 +254,7 @@ describe("remove", () => {
           ])],
         ])],
       ]),
+      ["discord", "users"],
     ))
       .toStrictEqual(Result.mkOk(
         MemoryFileSystem.create([
@@ -265,19 +265,18 @@ describe("remove", () => {
       ))
   })
   it("empty path error", () => {
-    expect(MemoryFileSystem.remove([], MemoryFileSystem.create()))
+    expect(MemoryFileSystem.remove(MemoryFileSystem.create(), []))
       .toStrictEqual(Result.mkError(RemoveError.PathFragmentsIsEmpty))
   })
   it("EntityNotFound error", () => {
     expect(MemoryFileSystem.remove(
+      MemoryFileSystem.create(),
       ["adalind.md"],
-      MemoryFileSystem.create()
     ))
       .toStrictEqual(Result.mkError(RemoveError.EntityNotFound))
   })
   it("EntityNotFound error2", () => {
     expect(MemoryFileSystem.remove(
-      ["discord", "users", "adalinda.md"],
       MemoryFileSystem.create([
         ["discord", Entity.createDirectory([
           ["guilds", Entity.createDirectory()],
@@ -286,6 +285,7 @@ describe("remove", () => {
           ])],
         ])],
       ]),
+      ["discord", "users", "adalinda.md"],
     ))
       .toStrictEqual(Result.mkError(RemoveError.EntityNotFound))
   })
