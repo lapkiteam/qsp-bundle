@@ -21,14 +21,8 @@ export type Entity =
   | UnionCase<"File", FileContent>
 
 export namespace Entity {
-  export function createDirectory2(
-    dir: Map<PathFragment, Entity>
-  ): Entity {
-    return UnionCase.mkUnionCase("Directory", dir)
-  }
-
   export function createDirectory(
-    dir?: [PathFragment, Entity][]
+    dir?: [PathFragment, Entity][] | Map<PathFragment, Entity>
   ): Entity {
     return UnionCase.mkUnionCase("Directory", new Map(dir))
   }
@@ -122,7 +116,7 @@ export namespace MemoryFileSystem {
       }
 
       const newDir = new Map(dir)
-      newDir.set(current, Entity.createDirectory2(result[1]))
+      newDir.set(current, Entity.createDirectory(result[1]))
       return Result.mkOk(newDir)
     }
 
