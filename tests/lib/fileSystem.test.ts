@@ -1,7 +1,7 @@
 import { describe, it, expect } from "@jest/globals"
 import { Result } from "@fering-org/functional-helper"
 
-import { MemoryFileSystem, Entity, WriteFileError, ReadFileError } from "../../src/lib/fileSystem"
+import { MemoryFileSystem, Entity, WriteFileError, ReadFileError, RemoveError } from "../../src/lib/fileSystem"
 
 describe("Entity.create", () => {
   it("just file with content", () => {
@@ -215,5 +215,78 @@ describe("readFile", () => {
       .toStrictEqual(
         Result.mkError(ReadFileError.FileNotFound)
       )
+  })
+})
+
+describe("remove", () => {
+  it("remove file", () => {
+    expect(MemoryFileSystem.remove(
+      ["discord", "users", "adalinda.md"],
+      MemoryFileSystem.create([
+        ["discord", Entity.createDirectory([
+          ["guilds", Entity.createDirectory()],
+          ["users", Entity.createDirectory([
+            ["agentlapki.md", Entity.createFile("Hello, I'm Agentlapki!")],
+            ["adalinda.md", Entity.createFile("Hello, I'm Adalinda!")],
+          ])],
+        ])],
+      ]),
+    ))
+      .toStrictEqual(Result.mkOk(
+        MemoryFileSystem.create([
+          ["discord", Entity.createDirectory([
+            ["guilds", Entity.createDirectory()],
+            ["users", Entity.createDirectory([
+              ["agentlapki.md", Entity.createFile("Hello, I'm Agentlapki!")],
+            ])],
+          ])],
+        ]),
+      ))
+  })
+  it("remove directory", () => {
+    expect(MemoryFileSystem.remove(
+      ["discord", "users"],
+      MemoryFileSystem.create([
+        ["discord", Entity.createDirectory([
+          ["guilds", Entity.createDirectory()],
+          ["users", Entity.createDirectory([
+            ["agentlapki.md", Entity.createFile("Hello, I'm Agentlapki!")],
+            ["adalinda.md", Entity.createFile("Hello, I'm Adalinda!")],
+          ])],
+        ])],
+      ]),
+    ))
+      .toStrictEqual(Result.mkOk(
+        MemoryFileSystem.create([
+          ["discord", Entity.createDirectory([
+            ["guilds", Entity.createDirectory()],
+          ])],
+        ]),
+      ))
+  })
+  it("empty path error", () => {
+    expect(MemoryFileSystem.remove([], MemoryFileSystem.create()))
+      .toStrictEqual(Result.mkError(RemoveError.PathFragmentsIsEmpty))
+  })
+  it("EntityNotFound error", () => {
+    expect(MemoryFileSystem.remove(
+      ["adalind.md"],
+      MemoryFileSystem.create()
+    ))
+      .toStrictEqual(Result.mkError(RemoveError.EntityNotFound))
+  })
+  it("EntityNotFound error2", () => {
+    expect(MemoryFileSystem.remove(
+      ["discord", "users", "adalinda.md"],
+      MemoryFileSystem.create([
+        ["discord", Entity.createDirectory([
+          ["guilds", Entity.createDirectory()],
+          ["users", Entity.createDirectory([
+            ["agentlapki.md", Entity.createFile("Hello, I'm Agentlapki!")],
+          ])],
+        ])],
+      ]),
+    ))
+      .toStrictEqual(Result.mkError(RemoveError.EntityNotFound))
   })
 })

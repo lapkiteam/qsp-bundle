@@ -1,6 +1,19 @@
 import { sep } from "path"
 import { UnionCase, type Option, Result } from "@fering-org/functional-helper"
 
+// todo: refactor: move to library
+export namespace ResultExt {
+  export function map<Ok, NewOk, Error>(
+    result: Result<Ok, Error>,
+    mapper: (ok: Ok) => NewOk,
+  ): Result<NewOk, Error> {
+    if (result[0] === "Error") {
+      return result as Result<NewOk, Error>
+    }
+    return Result.mkOk(mapper(result[1]))
+  }
+}
+
 export type PathFragment = string
 
 export type Path = PathFragment[]
@@ -68,6 +81,11 @@ export enum ReadFileError {
   "PathFragmentsIsEmpty",
   "FileNotFound",
   "IsDirectory",
+}
+
+export enum RemoveError {
+  "PathFragmentsIsEmpty",
+  "EntityNotFound",
 }
 
 export namespace MemoryFileSystem {
@@ -156,7 +174,44 @@ export namespace MemoryFileSystem {
     return loop(0, fileSystem)
   }
 
-  // export function remove(fileSystem: FileSystem, path: Path) {
-  //   todo
-  // }
+  export function remove(
+    pathFragments: Path,
+    fileSystem: MemoryFileSystem,
+  ): Result<MemoryFileSystem, RemoveError> {
+    const pathFragmentsLength = pathFragments.length
+    function loop(
+      pathFragmentsIndex: number,
+      dir: MemoryFileSystem,
+    ): Result<MemoryFileSystem, RemoveError> {
+      const isLast = pathFragmentsIndex === pathFragmentsLength - 1
+      const pathFragment = pathFragments[pathFragmentsIndex]
+      if (isLast) {
+        const result = dir.get(pathFragment)
+        if (!result) {
+          return Result.mkError(RemoveError.EntityNotFound)
+        }
+        // refactor: use `immutability-helper` for update
+        const newDir = new Map(dir)
+        newDir.delete(pathFragment)
+        return Result.mkOk(newDir)
+      }
+      const result = dir.get(pathFragment)
+      if (!result || result.case === "File") {
+        return Result.mkError(RemoveError.EntityNotFound)
+      }
+      return ResultExt.map(
+        loop(pathFragmentsIndex + 1, result.fields),
+        subDir => {
+          // refactor: use `immutability-helper` for update
+          const newDir = new Map(dir)
+          newDir.set(pathFragment, Entity.createDirectory(subDir))
+          return newDir
+        }
+      )
+    }
+    if (pathFragmentsLength === 0) {
+      return Result.mkError(RemoveError.PathFragmentsIsEmpty)
+    }
+    return loop(0, fileSystem)
+  }
 }
