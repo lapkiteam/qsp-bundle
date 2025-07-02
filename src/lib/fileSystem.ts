@@ -70,6 +70,12 @@ export enum WriteFileError {
   "PathFragmentsIsEmpty",
 }
 
+export enum ReadFileError {
+  "PathFragmentsIsEmpty",
+  "FileNotFound",
+  "IsDirectory",
+}
+
 export namespace MemoryFileSystem {
   // refactor: `MemoryFileSystem.mk` rename to `create`
   export function mk(dir: [string, Entity][]): MemoryFileSystem {
@@ -124,9 +130,38 @@ export namespace MemoryFileSystem {
     return loop(pathFragments, 0, fileSystem)
   }
 
-  // export function readFile(fileSystem: FileSystem, path: Path): Option<string> {
-  //   todo
-  // }
+  export function readFile(
+    pathFragments: Path,
+    fileSystem: MemoryFileSystem,
+  ): Result<FileContent, ReadFileError> {
+    const pathFragmentsLength = pathFragments.length
+    function loop(
+      pathFragmentsIndex: number,
+      dir: MemoryFileSystem
+    ): Result<FileContent, ReadFileError> {
+      const isLast = pathFragmentsIndex === pathFragmentsLength - 1
+      const pathFragment = pathFragments[pathFragmentsIndex]
+      if (isLast) {
+        const result = dir.get(pathFragment)
+        if (!result) {
+          return Result.mkError(ReadFileError.FileNotFound)
+        }
+        if (result.case === "Directory") {
+          return Result.mkError(ReadFileError.IsDirectory)
+        }
+        return Result.mkOk(result.fields)
+      }
+      const result = dir.get(pathFragment)
+      if (!result || result.case === "File") {
+        return Result.mkError(ReadFileError.FileNotFound)
+      }
+      return loop(pathFragmentsIndex + 1, result.fields)
+    }
+    if (pathFragmentsLength === 0) {
+      return Result.mkError(ReadFileError.PathFragmentsIsEmpty)
+    }
+    return loop(0, fileSystem)
+  }
 
   // export function remove(fileSystem: FileSystem, path: Path) {
   //   todo
