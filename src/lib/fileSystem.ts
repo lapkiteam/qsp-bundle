@@ -1,5 +1,6 @@
 import { sep } from "path"
 import { UnionCase, type Option, Result } from "@fering-org/functional-helper"
+import update from "immutability-helper"
 
 // todo: refactor: move to library
 export namespace ResultExt {
@@ -24,6 +25,12 @@ export namespace Path {
     separator?: string
   ): PathFragment[] {
     return rawPath.split(separator || sep)
+  }
+
+  export function push(path: Path, newFragment: PathFragment): Path {
+    return update(path, {
+      $push: [newFragment]
+    })
   }
 }
 
@@ -213,5 +220,25 @@ export namespace MemoryFileSystem {
       return Result.mkError(RemoveError.PathFragmentsIsEmpty)
     }
     return loop(0, fileSystem)
+  }
+
+  export function forEach(
+    fileSystem: MemoryFileSystem,
+    cb: (path: Path, FileContent: FileContent) => void,
+  ): void {
+    function loop(
+      fileSystem: MemoryFileSystem,
+      path: Path,
+    ) {
+      fileSystem.forEach((value, key) => {
+        const newPath = Path.push(path, key)
+        if (value.case === "File") {
+          cb(newPath, value.fields)
+          return
+        }
+        loop(value.fields, newPath)
+      })
+    }
+    loop(fileSystem, [])
   }
 }

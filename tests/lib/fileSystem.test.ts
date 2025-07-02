@@ -1,7 +1,7 @@
 import { describe, it, expect } from "@jest/globals"
 import { Result } from "@fering-org/functional-helper"
 
-import { MemoryFileSystem, Entity, WriteFileError, ReadFileError, RemoveError } from "../../src/lib/fileSystem"
+import { MemoryFileSystem, Entity, WriteFileError, ReadFileError, RemoveError, Path, FileContent } from "../../src/lib/fileSystem"
 
 describe("Entity.create", () => {
   it("just file with content", () => {
@@ -288,5 +288,31 @@ describe("remove", () => {
       ["discord", "users", "adalinda.md"],
     ))
       .toStrictEqual(Result.mkError(RemoveError.EntityNotFound))
+  })
+})
+
+describe("MemoryFileSystem.forEach", () => {
+  it("EntityNotFound error2", () => {
+    const files: [Path, FileContent][] = []
+    MemoryFileSystem.forEach(
+      MemoryFileSystem.create([
+        ["discord", Entity.createDirectory([
+          ["guilds", Entity.createDirectory([
+            ["agency.md", Entity.createFile("some Agency")]
+          ])],
+          ["users", Entity.createDirectory([
+            ["agentlapki.md", Entity.createFile("Hello, I'm Agentlapki!")],
+          ])],
+        ])],
+      ]),
+      (path, content) => {
+        files.push([path, content])
+      },
+    )
+    expect(files)
+      .toStrictEqual([
+        [["discord", "guilds", "agency.md"], "some Agency"],
+        [["discord", "users", "agentlapki.md"], "Hello, I'm Agentlapki!"],
+      ])
   })
 })
