@@ -142,8 +142,8 @@ export namespace MemoryFileSystem {
   }
 
   export function readFile(
-    pathFragments: Path,
     fileSystem: MemoryFileSystem,
+    pathFragments: Path,
   ): Result<FileContent, ReadFileError> {
     const pathFragmentsLength = pathFragments.length
     function loop(

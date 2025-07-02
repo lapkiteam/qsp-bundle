@@ -161,7 +161,6 @@ describe("writeFile", () => {
 describe("readFile", () => {
   it("success read file", () => {
     expect(MemoryFileSystem.readFile(
-      ["discord", "users", "adalinda.md"],
       MemoryFileSystem.create([
         ["discord", Entity.createDirectory([
           ["users", Entity.createDirectory([
@@ -169,15 +168,16 @@ describe("readFile", () => {
           ])],
         ])],
       ]),
+      ["discord", "users", "adalinda.md"],
     ))
       .toStrictEqual(Result.mkOk("Hello, I'm Adalinda!"))
   })
   it("is directory error", () => {
     expect(MemoryFileSystem.readFile(
-      ["adalinda.md"],
       MemoryFileSystem.create([
         ["adalinda.md", Entity.createDirectory()]
       ]),
+      ["adalinda.md"],
     ))
       .toStrictEqual(
         Result.mkError(ReadFileError.IsDirectory)
@@ -185,8 +185,8 @@ describe("readFile", () => {
   })
   it("empty path error", () => {
     expect(MemoryFileSystem.readFile(
-      [],
       MemoryFileSystem.create(),
+      [],
     ))
       .toStrictEqual(
         Result.mkError(ReadFileError.PathFragmentsIsEmpty)
@@ -194,10 +194,10 @@ describe("readFile", () => {
   })
   it("read unexist file error", () => {
     expect(MemoryFileSystem.readFile(
-      ["discord", "users", "lumi.md"],
       MemoryFileSystem.create([
         ["discord", Entity.createDirectory()]
       ]),
+      ["discord", "users", "lumi.md"],
     ))
       .toStrictEqual(
         Result.mkError(ReadFileError.FileNotFound)
@@ -205,12 +205,12 @@ describe("readFile", () => {
   })
   it("one of the path fragments hits a file error", () => {
     expect(MemoryFileSystem.readFile(
-      ["discord", "users", "lumi.md"],
       MemoryFileSystem.create([
         ["discord", Entity.createDirectory([
           ["users", Entity.createFile("")]
         ])]
       ]),
+      ["discord", "users", "lumi.md"],
     ))
       .toStrictEqual(
         Result.mkError(ReadFileError.FileNotFound)
