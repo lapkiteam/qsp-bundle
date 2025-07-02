@@ -47,7 +47,7 @@ describe("writeFile", () => {
   it("is directory error", () => {
     expect(MemoryFileSystem.writeFile(
       ["adalinda.md"], "Hello, I'm Adalinda!",
-      MemoryFileSystem.mk([
+      MemoryFileSystem.create([
         ["adalinda.md", Entity.createDirectory([])]
       ]),
     ))
@@ -58,7 +58,7 @@ describe("writeFile", () => {
   it("empty path error", () => {
     expect(MemoryFileSystem.writeFile(
       [], "",
-      MemoryFileSystem.mk([]),
+      MemoryFileSystem.create([]),
     ))
       .toStrictEqual(
         Result.mkError(WriteFileError.PathFragmentsIsEmpty)
@@ -67,10 +67,10 @@ describe("writeFile", () => {
   it("create and write file in empty directory", () => {
     expect(MemoryFileSystem.writeFile(
       ["adalinda.md"], "Hello, I'm Adalinda!",
-      MemoryFileSystem.mk([]),
+      MemoryFileSystem.create([]),
     ))
       .toStrictEqual(
-        Result.mkOk(MemoryFileSystem.mk([
+        Result.mkOk(MemoryFileSystem.create([
           ["adalinda.md", Entity.createFile("Hello, I'm Adalinda!")]
         ]))
       )
@@ -78,12 +78,12 @@ describe("writeFile", () => {
   it("create and write file in not empty directory", () => {
     expect(MemoryFileSystem.writeFile(
       ["adalinda.md"], "Hello, I'm Adalinda!",
-      MemoryFileSystem.mk([
+      MemoryFileSystem.create([
         ["index.md", Entity.createFile("empty")]
       ]),
     ))
       .toStrictEqual(
-        Result.mkOk(MemoryFileSystem.mk([
+        Result.mkOk(MemoryFileSystem.create([
           ["index.md", Entity.createFile("empty")],
           ["adalinda.md", Entity.createFile("Hello, I'm Adalinda!")],
         ]))
@@ -92,12 +92,12 @@ describe("writeFile", () => {
   it("rewrite one directory file", () => {
     expect(MemoryFileSystem.writeFile(
       ["adalinda.md"], "Hello, I'm Adalinda!",
-      MemoryFileSystem.mk([
+      MemoryFileSystem.create([
         ["adalinda.md", Entity.createFile("empty")]
       ]),
     ))
       .toStrictEqual(
-        Result.mkOk(MemoryFileSystem.mk([
+        Result.mkOk(MemoryFileSystem.create([
           ["adalinda.md", Entity.createFile("Hello, I'm Adalinda!")]
         ]))
       )
@@ -105,14 +105,14 @@ describe("writeFile", () => {
   it("rewrite one subdirectory file", () => {
     expect(MemoryFileSystem.writeFile(
       ["users", "adalinda.md"], "Hello, I'm Adalinda!",
-      MemoryFileSystem.mk([
+      MemoryFileSystem.create([
         ["users", Entity.createDirectory([
           ["adalinda.md", Entity.createFile("empty")],
         ])],
       ]),
     ))
       .toStrictEqual(
-        Result.mkOk(MemoryFileSystem.mk([
+        Result.mkOk(MemoryFileSystem.create([
           ["users", Entity.createDirectory([
             ["adalinda.md", Entity.createFile("Hello, I'm Adalinda!")],
           ])],
@@ -122,14 +122,14 @@ describe("writeFile", () => {
   it("create discord/users/adalinda.md in discord/index.md", () => {
     expect(MemoryFileSystem.writeFile(
       ["discord", "users", "adalinda.md"], "Hello, I'm Adalinda!",
-      MemoryFileSystem.mk([
+      MemoryFileSystem.create([
         ["discord", Entity.createDirectory([
           ["index.md", Entity.createFile("empty")],
         ])],
       ]),
     ))
       .toStrictEqual(
-        Result.mkOk(MemoryFileSystem.mk([
+        Result.mkOk(MemoryFileSystem.create([
           ["discord", Entity.createDirectory([
             ["index.md", Entity.createFile("empty")],
             ["users", Entity.createDirectory([
@@ -142,12 +142,12 @@ describe("writeFile", () => {
   it("create discord/users/lumi.md in discord", () => {
     expect(MemoryFileSystem.writeFile(
       ["discord", "users", "adalinda.md"], "Hello, I'm Adalinda!",
-      MemoryFileSystem.mk([
+      MemoryFileSystem.create([
         ["discord", Entity.createDirectory([])],
       ]),
     ))
       .toStrictEqual(
-        Result.mkOk(MemoryFileSystem.mk([
+        Result.mkOk(MemoryFileSystem.create([
           ["discord", Entity.createDirectory([
             ["users", Entity.createDirectory([
               ["adalinda.md", Entity.createFile("Hello, I'm Adalinda!")],
@@ -162,7 +162,7 @@ describe("readFile", () => {
   it("success read file", () => {
     expect(MemoryFileSystem.readFile(
       ["discord", "users", "adalinda.md"],
-      MemoryFileSystem.mk([
+      MemoryFileSystem.create([
         ["discord", Entity.createDirectory([
           ["users", Entity.createDirectory([
             ["adalinda.md", Entity.createFile("Hello, I'm Adalinda!")],
@@ -175,7 +175,7 @@ describe("readFile", () => {
   it("is directory error", () => {
     expect(MemoryFileSystem.readFile(
       ["adalinda.md"],
-      MemoryFileSystem.mk([
+      MemoryFileSystem.create([
         ["adalinda.md", Entity.createDirectory([])]
       ]),
     ))
@@ -186,7 +186,7 @@ describe("readFile", () => {
   it("empty path error", () => {
     expect(MemoryFileSystem.readFile(
       [],
-      MemoryFileSystem.mk([]),
+      MemoryFileSystem.create([]),
     ))
       .toStrictEqual(
         Result.mkError(ReadFileError.PathFragmentsIsEmpty)
@@ -195,7 +195,7 @@ describe("readFile", () => {
   it("read unexist file error", () => {
     expect(MemoryFileSystem.readFile(
       ["discord", "users", "lumi.md"],
-      MemoryFileSystem.mk([
+      MemoryFileSystem.create([
         ["discord", Entity.createDirectory([])]
       ]),
     ))
@@ -206,7 +206,7 @@ describe("readFile", () => {
   it("one of the path fragments hits a file error", () => {
     expect(MemoryFileSystem.readFile(
       ["discord", "users", "lumi.md"],
-      MemoryFileSystem.mk([
+      MemoryFileSystem.create([
         ["discord", Entity.createDirectory([
           ["users", Entity.createFile("")]
         ])]

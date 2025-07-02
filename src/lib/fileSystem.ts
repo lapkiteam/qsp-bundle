@@ -77,8 +77,7 @@ export enum ReadFileError {
 }
 
 export namespace MemoryFileSystem {
-  // refactor: `MemoryFileSystem.mk` rename to `create`
-  export function mk(dir: [string, Entity][]): MemoryFileSystem {
+  export function create(dir: [string, Entity][]): MemoryFileSystem {
     return new Map(dir)
   }
 
