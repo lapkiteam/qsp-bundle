@@ -28,7 +28,7 @@ export namespace Entity {
   }
 
   export function createDirectory(
-    dir: [PathFragment, Entity][]
+    dir?: [PathFragment, Entity][]
   ): Entity {
     return UnionCase.mkUnionCase("Directory", new Map(dir))
   }

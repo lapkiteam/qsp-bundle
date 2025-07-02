@@ -48,7 +48,7 @@ describe("writeFile", () => {
     expect(MemoryFileSystem.writeFile(
       ["adalinda.md"], "Hello, I'm Adalinda!",
       MemoryFileSystem.create([
-        ["adalinda.md", Entity.createDirectory([])]
+        ["adalinda.md", Entity.createDirectory()]
       ]),
     ))
       .toStrictEqual(
@@ -143,7 +143,7 @@ describe("writeFile", () => {
     expect(MemoryFileSystem.writeFile(
       ["discord", "users", "adalinda.md"], "Hello, I'm Adalinda!",
       MemoryFileSystem.create([
-        ["discord", Entity.createDirectory([])],
+        ["discord", Entity.createDirectory()],
       ]),
     ))
       .toStrictEqual(
@@ -176,7 +176,7 @@ describe("readFile", () => {
     expect(MemoryFileSystem.readFile(
       ["adalinda.md"],
       MemoryFileSystem.create([
-        ["adalinda.md", Entity.createDirectory([])]
+        ["adalinda.md", Entity.createDirectory()]
       ]),
     ))
       .toStrictEqual(
@@ -196,7 +196,7 @@ describe("readFile", () => {
     expect(MemoryFileSystem.readFile(
       ["discord", "users", "lumi.md"],
       MemoryFileSystem.create([
-        ["discord", Entity.createDirectory([])]
+        ["discord", Entity.createDirectory()]
       ]),
     ))
       .toStrictEqual(
