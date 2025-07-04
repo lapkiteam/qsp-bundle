@@ -1,6 +1,7 @@
 import { dirname, basename, extname, join } from "path"
 import { opendirSync, type Dirent, readFileSync } from "fs"
 
+import { Bundler } from "./lib/bundler"
 import { MemoryFileSystem } from "./lib/fileSystem"
 
 export type Options = {

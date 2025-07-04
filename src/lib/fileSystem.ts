@@ -9,9 +9,19 @@ export namespace ResultExt {
     mapper: (ok: Ok) => NewOk,
   ): Result<NewOk, Error> {
     if (result[0] === "Error") {
-      return result as Result<NewOk, Error>
+      return Result.mkError(result[1])
     }
     return Result.mkOk(mapper(result[1]))
+  }
+
+  export function mapError<Ok, Error, NewError>(
+    result: Result<Ok, Error>,
+    mapper: (ok: Error) => NewError,
+  ): Result<Ok, NewError> {
+    if (result[0] === "Ok") {
+      return Result.mkOk(result[1])
+    }
+    return Result.mkError(mapper(result[1]))
   }
 }
 
@@ -31,6 +41,18 @@ export namespace Path {
     return update(path, {
       $push: [newFragment]
     })
+  }
+
+  export function isEqual(thisPath: Path, otherPath: Path) {
+    if (thisPath.length !== otherPath.length) {
+      return false
+    }
+    for (let index = 0; index < thisPath.length; index++) {
+      if (thisPath[index] !== otherPath[index]) {
+        return false
+      }
+    }
+    return true
   }
 }
 
