@@ -1,7 +1,6 @@
 {
   "name": "qsp-bundle",
   "version": "0.1.0",
-  "description": "Собирает воедино все QSP исходники в папках и в подпапках согласно указанному главному исходнику.",
   "scripts": {
     "clean": "gulp clean",
     "build": "gulp build",
@@ -12,9 +11,6 @@
     "test": "gulp test",
     "test:watch": "gulp testWatch"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
     "@types/gulp": "^4.0.17",
     "@typescript-eslint/eslint-plugin": "^5.62.0",

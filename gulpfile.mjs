@@ -61,10 +61,25 @@ task("packageJsonCopy", cb => {
     .pipe(jsonModifier(function(json) {
       delete json.scripts
       delete json.devDependencies
-      json.main = "bin/qsp-bundle.js"
-      json.bin = {
-        ["qsp-bundle"]: "bin/qsp-bundle.js"
+      const newJson = {
+        description: "Собирает воедино все QSP исходники в папках и в подпапках согласно указанному главному исходнику.",
+        main: "bin/qsp-bundle.js",
+        bin: {
+          ["qsp-bundle"]: "bin/qsp-bundle.js"
+        },
+        repository: {
+          "type": "git",
+          "url": "git+https://github.com/lapkiteam/qsp-bundle.git"
+        },
+        keywords: ["qsp"],
+        author: "gretmn102",
+        bugs: {
+          "url": "https://github.com/lapkiteam/qsp-bundle/issues"
+        },
+        homepage: "https://github.com/lapkiteam/qsp-bundle#readme",
+        license: "ISC",
       }
+      Object.assign(json, newJson)
       return json
     }))
     .pipe(dest(buildPath))
