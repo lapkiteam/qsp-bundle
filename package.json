@@ -1,5 +1,5 @@
 {
-  "name": "qsp-bundle",
+  "name": "@fering-org/qsp-bundle",
   "version": "0.1.0",
   "scripts": {
     "clean": "gulp clean",
