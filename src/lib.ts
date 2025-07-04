@@ -1,5 +1,9 @@
 import { dirname, basename, extname, join, normalize } from "path"
-import { opendirSync, type Dirent, readFileSync } from "fs"
+import { opendirSync, type Dirent, readFileSync, writeFileSync } from "fs"
+import chokidar from "chokidar"
+
+import { BundleError, Bundler } from "./lib/bundler"
+import { Path, RemoveError, WriteFileError } from "./lib/fileSystem"
 
 export type Options = {
   /** `utf8` by default */
@@ -47,4 +51,84 @@ export function bundle(mainPath: string, options?: Options) {
   }
   directory.closeSync()
   return sources.join(Options.getSeparator(options))
+}
+
+export function bundleWatch(
+  mainPath: string,
+  outputPath: string,
+  options?: Options,
+) {
+  // todo: написать проверку, что outputPath не находится в прослушиваемой директории
+  if (!options) { options = Options.create() }
+  mainPath = normalize(mainPath)
+  const basePath = dirname(mainPath)
+  let bundler = Bundler.create(Path.split(mainPath))
+  function updateBundler(newBundler: Bundler) {
+    bundler = newBundler
+    // todo: make bundle only if ready
+    const result = Bundler.bundle(bundler, options?.separator || Options.separatorDefault)
+    if (result[0] === "Error") {
+      console.log(BundleError.toString(result[1]))
+      return
+    }
+    writeFileSync(outputPath, result[1])
+  }
+
+  const watcher = chokidar.watch(basePath, {
+    ignored: (path, stats) => {
+      if (!stats) { return false }
+      return stats.isFile() && !path.endsWith(".qsps")
+    },
+    persistent: true,
+  })
+  watcher
+    .on("add", path => {
+      console.log(`File ${path} has been added`)
+      const result = Bundler.writeFile(bundler,
+        Path.split(path),
+        readFileSync(path, options && Options.getEncoding(options) || Options.encodingDefault),
+      )
+      if (result[0] === "Error") {
+        console.error(WriteFileError.toString(result[1]))
+        return
+      }
+      updateBundler(result[1])
+    })
+    .on("change", path => {
+      console.log(`File ${path} has been changed`)
+      const result = Bundler.writeFile(bundler,
+        Path.split(path),
+        readFileSync(path, options && Options.getEncoding(options) || Options.encodingDefault),
+      )
+      if (result[0] === "Error") {
+        console.error(WriteFileError.toString(result[1]))
+        return
+      }
+      updateBundler(result[1])
+    })
+    .on("unlink", path => {
+      console.log(`File ${path} has been removed`)
+      const result = Bundler.remove(bundler, Path.split(path))
+      if (result[0] === "Error") {
+        console.error(RemoveError.toString(result[1]))
+        return
+      }
+      updateBundler(result[1])
+    })
+    .on("addDir", path => console.log(`Directory ${path} has been added`))
+    .on("unlinkDir", path => {
+      console.log(`Directory ${path} has been removed`)
+      const result = Bundler.remove(bundler, Path.split(path))
+      if (result[0] === "Error") {
+        console.error(RemoveError.toString(result[1]))
+        return
+      }
+      updateBundler(result[1])
+    })
+    .on("error", error => console.log(`Watcher error: ${error}`))
+    .on("ready", () => console.log("Initial scan complete. Ready for changes"))
+    .on("raw", (event, path, details) => { // internal
+      console.log("Raw event info:", event, path, details)
+    })
+  return watcher
 }
