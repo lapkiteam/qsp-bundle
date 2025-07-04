@@ -92,10 +92,17 @@ task("readmeCopy", done => {
     .on("end", done)
 })
 
+task("changelogCopy", done => {
+  src("./CHANGELOG.md")
+    .pipe(dest(buildPath))
+    .on("end", done)
+})
+
 task("deploy", series([
   "clean",
   "build",
   "readmeCopy",
+  "changelogCopy",
   "packageJsonCopy",
 ]))
 
