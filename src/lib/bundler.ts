@@ -12,6 +12,15 @@ export enum BundleError {
   "MainSourceNotFound",
 }
 
+export namespace BundleError {
+  export function toString(error: BundleError) {
+    switch (error) {
+      case BundleError.MainSourceNotFound:
+        return "MainSourceNotFound"
+    }
+  }
+}
+
 export namespace Bundler {
   export function create(mainSourcePath: Path): Bundler {
     return {

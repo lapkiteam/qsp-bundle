@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "@fering-org/functional-helper": "^0.6.2",
+    "chokidar": "^4.0.3",
     "commander": "^13.1.0",
     "immutability-helper": "^3.1.1",
     "ts-functional-pipe": "^3.1.2"

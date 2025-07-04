@@ -106,15 +106,50 @@ export enum WriteFileError {
   "PathFragmentsIsEmpty",
 }
 
+export namespace WriteFileError {
+  export function toString(params: WriteFileError) {
+    switch (params) {
+      case WriteFileError.IsDirectory:
+        return "IsDirectory"
+      case WriteFileError.PathFragmentsIsEmpty:
+        return "PathFragmentsIsEmpty"
+    }
+  }
+}
+
 export enum ReadFileError {
   "PathFragmentsIsEmpty",
   "FileNotFound",
   "IsDirectory",
 }
 
+export namespace ReadFileError {
+  export function toString(error: ReadFileError) {
+    switch (error) {
+      case ReadFileError.IsDirectory:
+        return "IsDirectory"
+      case ReadFileError.PathFragmentsIsEmpty:
+        return "PathFragmentsIsEmpty"
+      case ReadFileError.FileNotFound:
+        return "FileNotFound"
+    }
+  }
+}
+
 export enum RemoveError {
   "PathFragmentsIsEmpty",
   "EntityNotFound",
+}
+
+export namespace RemoveError {
+  export function toString(params:RemoveError) {
+    switch (params) {
+      case RemoveError.EntityNotFound:
+        return "EntityNotFound"
+      case RemoveError.PathFragmentsIsEmpty:
+        return "PathFragmentsIsEmpty"
+    }
+  }
 }
 
 export namespace MemoryFileSystem {

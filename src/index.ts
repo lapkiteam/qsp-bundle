@@ -1,7 +1,7 @@
 import { Command } from "commander"
 import { writeFileSync } from "fs"
 
-import { bundle } from "./lib"
+import { bundle, bundleWatch } from "./lib"
 
 const program = new Command()
 
@@ -13,9 +13,19 @@ program
 program
   .argument("<main_source_path>", "string to split")
   .option("-o, --output <path>", "output path")
+  .option("-w, --watch", "watch mode")
   .action((mainSourcePath, options) => {
     const result = bundle(mainSourcePath)
+    const watchMode: string | undefined = options.watch
     const outputPath: string | undefined = options.output
+    if (watchMode) {
+      if (!outputPath) {
+        console.error("watch mode need --output argument")
+        return
+      }
+      bundleWatch(mainSourcePath, outputPath)
+      return
+    }
     if (!outputPath) {
       console.log(result)
       return
