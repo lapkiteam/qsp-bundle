@@ -10,7 +10,9 @@
     "globalUninstall": "cd build && npm uninstall qsp-bundle",
     "test": "gulp test",
     "test:watch": "gulp testWatch",
-    "release": "standard-version"
+    "release": "standard-version",
+    "pack": "npm run deploy && cd build && npm pack",
+    "publish": "npm run deploy && cd build && npm publish --access public"
   },
   "devDependencies": {
     "@types/gulp": "^4.0.17",
