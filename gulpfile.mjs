@@ -62,6 +62,7 @@ task("packageJsonCopy", cb => {
       delete json.scripts
       delete json.devDependencies
       const newJson = {
+        scripts: {}, // added because of `npm publish`, which displays a warning about its absence
         description: "Собирает воедино все QSP исходники в папках и в подпапках согласно указанному главному исходнику.",
         main: "bin/qsp-bundle.js",
         bin: {
