@@ -7,7 +7,7 @@
     "dev": "npm run build && cd build && node bin/qsp-bundle.js",
     "deploy": "gulp deploy",
     "globalInstall": "cd build && npm install -g .",
-    "globalUninstall": "cd build && npm uninstall qsp-bundle",
+    "globalUninstall": "npm uninstall -g @fering-org/qsp-bundle",
     "test": "gulp test",
     "test:watch": "gulp testWatch",
     "release": "standard-version",
