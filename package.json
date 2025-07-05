@@ -12,7 +12,7 @@
     "test:watch": "gulp testWatch",
     "release": "standard-version",
     "pack": "npm run deploy && cd build && npm pack",
-    "publish": "npm run deploy && cd build && npm publish"
+    "publish": "npm run deploy && cd build && npm publish --access public"
   },
   "devDependencies": {
     "@types/gulp": "^4.0.17",
